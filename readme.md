@@ -1,35 +1,19 @@
-## Vocabulary
-- `host`:  
-  Your main OS. It could be MAC-OS or Windows.  
+## what is this
+This is a basic vagrant box. It installs the official ubuntu box and a MEAN
+environment.  
+It installs mongodb, nodejs and some npm global packages. You can easily disable
+the provisions in the `Vagrantfile`  
 
-- `box`:  
-  This is your virtual machine created by [vagrant]().  
-  To be precise, it's a [virtualbox]() virtual machine. But the `box` management
-  is done by vagrant.
-
-- `guest`:  
-  This is the OS running inside your box. Normally the latest Ubuntu [LTS]()
-  server
-
-- `provision`:  
-  To install/upgrade/configure custom software into the `box`
-
-- `Vagrantfile`:  
-  This file contains all the configuration need by vagrant.
-
-- `box's home`:  
-  This is the directory where the `Vagrantfile` is located and its contents are
-  shared with the `guest`
-
-## 0)  Requirements
+## Requirements
 You must have a `virtualbox` and `vagrant` installation. Look [here]() for
 instructions
 
-## 1) Install this vagrant box
+## Install this vagrant box
 
 - git clone the vagrant `box`:
   ```bash
-  [local]$ git clone --depth=1 http....
+  [local]$ git clone --depth=1 https://github.com/markuz-gj/base-box
+  [local]$ cd base-box
   ```
 
 - install your vagrant `box` `ssh` in the box, and:
@@ -38,9 +22,42 @@ instructions
   ```
 
 - Now you will be downloading Ubuntu's server image, it may take while.  
-  The official `ubuntu box` will be installed and you should see something like this.
+  The official `ubuntu box` will be installed and you should see something like
+  this.
 
   ```
+  Bringing machine 'default' up with 'virtualbox' provider...
+  ==> default: Box 'ubuntu-official' could not be found. Attempting to find and install...
+      default: Box Provider: virtualbox
+      default: Box Version: >= 0
+  ==> default: Adding box 'ubuntu-official' (v0) for provider: virtualbox
+      default: Downloading: https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box
+  ==> default: Successfully added box 'ubuntu-official' (v0) for 'virtualbox'!
+  ==> default: Importing base box 'ubuntu-official'...
+  ==> default: Matching MAC address for NAT networking...
+  ==> default: Setting the name of the VM: base-box_default_1402695349489_80660
+  ==> default: Clearing any previously set forwarded ports...
+  ==> default: Clearing any previously set network interfaces...
+  ==> default: Preparing network interfaces based on configuration...
+      default: Adapter 1: nat
+      default: Adapter 2: hostonly
+  ==> default: Forwarding ports...
+      default: 22 => 2222 (adapter 1)
+  ==> default: Running 'pre-boot' VM customizations...
+  ==> default: Booting VM...
+  ==> default: Waiting for machine to boot. This may take a few minutes...
+      default: SSH address: 127.0.0.1:2222
+      default: SSH username: vagrant
+      default: SSH auth method: private key
+      default: Warning: Connection timeout. Retrying...
+      default: Warning: Remote connection disconnect. Retrying...
+  ==> default: Machine booted and ready!
+  ==> default: Checking for guest additions in VM...
+  ==> default: Configuring and enabling network interfaces...
+  ==> default: Mounting shared folders...
+      default: /vagrant => /Users/MGJ/test/base-box
+      default: /tmp/vagrant-puppet-3/manifests => /Users/MGJ/test/base-box
+  ==> default: Machine not provisioning because `--no-provision` is specified.
   Welcome to Ubuntu 14.04 LTS (GNU/Linux 3.13.0-29-generic x86_64)
 
    * Documentation:  https://help.ubuntu.com/
@@ -57,21 +74,30 @@ instructions
   ```
 
   If you got this far, this means your `virtualbox` and `vagrant` are working
-  well together and our `base box` is up and running.
+  well together and our `base box` is up and running.  
+  But just to be sure, run `uname -v`
+  ```bash
+  vagrant@vagrant-ubuntu-trusty-64:~$ uname -v
+  #53-Ubuntu SMP Wed Jun 4 21:00:20 UTC 2014
+  ```
 
 - exit box, reload it, and run provisions:
 
   - this time around, it may take a long while all provisions are being
-  run. You may go grab a coffee
+  run. This is the place where `nodejs` and `mongodb` are downloaded and
+  installed.
+  You may go grab a coffee
 
     ```bash
     vagrant@vagrant-ubuntu-trusty-64:~$ exit
-    [local] $ vagrant reload && vagrant ssh
+    [local] $ vagrant reload --provision && vagrant ssh
     ```
 
-  - and now, you should see something like this.
+  - and now, you should see something like this at the end.
 
     ```
+    ==> default: Processing triggers for ureadahead (0.100.0-16) ...
+    ==> default: Setting up mongodb-org (2.6.1) ...
     Welcome to Ubuntu 14.04 LTS (GNU/Linux 3.13.0-29-generic x86_64)
 
      * Documentation:  https://help.ubuntu.com/
@@ -105,7 +131,13 @@ instructions
   - test the shared directory
     ```bash
     vagrant@vagrant-ubuntu-trusty-64:~$ ls /vagrant
-    bootstrap.pp  home-dir-ubuntu.tgz  notes.md  shell-provisions  Vagrantfile
+    bootstrap.pp  provisions.sh  readme.md  Vagrantfile
+    #
+    # checking nodejs and mongodb installed versions.
+    vagrant@vagrant-ubuntu-trusty-64:~$  node -v
+    v0.10.29
+    vagrant@vagrant-ubuntu-trusty-64:~$ mongo --version
+    MongoDB shell version: 2.6.1
     ```
 
     If your `/vagrant` directory is empty, this means you `guest additions` is
@@ -113,56 +145,65 @@ instructions
 
     #### Congrats. Now you are set to go.
 
+## Vocabulary
+- `host OS`:  
+  Your main OS. It could be Mac/Windows/Linux OS.  
 
-## 2) sync git repositories
+- `guest OS`:  
+  This is the OS running inside your box. Normally the latest Ubuntu [LTS]()
+  server
 
-- You must be in the `box's home` directory on your `host`
+- `box`:  
+  This is your virtual machine created by [vagrant]().  
+  To be precise, it's a [virtualbox]() virtual machine. But the `box` management
+  is all done by vagrant.
 
-  ```bash
-    [local]$ vagrant up && vagrant ssh
-    Welcome to Ubuntu 14.04 LTS (GNU/Linux 3.13.0-29-generic x86_64)
-        ...    ...    ...    ...
-    vagrant@vagrant-ubuntu-trusty-64:~$
-  ```
+- `provision`:  
+  To install/upgrade/configure custom software into the `box`
+
+- `Vagrantfile`:  
+  This file contains all the configuration need by vagrant to build your box.
+
+- `box's shared folder`:  
+  This is the directory where the `Vagrantfile` is located and its contents are
+  shared with the `guest os`.  
+  This is the location where host and guest OS'es can share data.
+
 
 ## vagrant cheatsheet:  
-  The directory where your `Vagrantfile` is located on the `mac/windows host`
-  is shared with the `ubuntu guest`
 
-  - turn the box on:
-  ```bash
-  [local]$ vagrant up # provisions are only run on first time running this command.
-  ```
-  - go inside the box:
-  ```bash
-  [local]$ vagrant ssh
-  ```
-  - exit the box:
-  ```bash
-  vagrant@vagrant-ubuntu-trusty-64:~$ exit
-  ```
-  - turn the box off:
-  ``` bash
-  [local]$ vagrant halt
-  ```
-  - turn the box on and go inside of it:
-  ```bash
-  [local]$ vagrant up && vagrant ssh
-  ```
-  - turn the box on and run provisions:
-  ```bash
-  [local]$ vagrant up --provision
-  ```
-  - turn the box on and **don't** run provisions. Useful on first time bringing
-  the `box` up
-  ```bash
-  [local]$ vagrant up --no-provision
-  ```
-  - reload the box:
-  ```bash
-  [local]$ vagrant reload # a shortcut for `vagrant halt && vagrant up`
-  ```
-  - reload, re-provision, and go inside of the `box`:
-  ```bash
-  [local]$ vagrant reload --provision && vagrant ssh
-  ```
+All vagrant commands need to be run in the box's shared folder.
+
+```bash
+# Turn the box on
+[local]$ vagrant up
+
+# Go inside the box
+[local]$ vagrant ssh
+
+# Exit the box
+vagrant@vagrant-ubuntu-trusty-64:~$ exit
+
+# turn the box off
+[local]$ vagrant halt
+
+# Delete the box
+[local]$ vagrant destroy -f
+
+# Turn the box up and go inside of it
+[local]$ vagrant up && vagrant ssh
+
+# Turn the box on and run provisions
+[local]$ vagrant up --provision
+
+# Turn the box on and **don't** run provisions.
+# Useful on first time bringing the box up
+[local]$ vagrant up --no-provision
+
+# a shortcut for `vagrant halt && vagrant up`
+[local]$ vagrant reload
+
+# reload, re-provision, and go inside of the box
+[local]$ vagrant reload --provision && vagrant ssh
+
+```

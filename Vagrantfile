@@ -17,13 +17,5 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "shell", id: "update", inline: "apt-get update && apt-get -y upgrade"
   config.vm.provision "shell", id: "provision", path: "#{File.expand_path("..", __FILE__)}/provisions.sh"
-  
-  # config.vm.provision "shell", id: "update", inline: "apt-get update && apt-get -y upgrade"
 
-  # for script in ['base-sys', 'node', 'mongo', 'packer', 'docker']
-  # for script in ['base-sys']
-  #   config.vm.provision "shell", id: "install-#{script}", path: "#{shell_provisions_path}/#{script}.sh"
-  # end
-
-  # config.vm.synced_folder "../shared", "/shared"
 end
