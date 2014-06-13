@@ -16,8 +16,8 @@ instructions
   [local]$ cd base-box
   ```
 
-- install your vagrant `box` `ssh` in the box, and:
-```bash
+- install your vagrant box, and ssh into the box:
+  ```bash
   [local]$ vagrant up --no-provision && vagrant ssh
   ```
 
