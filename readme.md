@@ -10,13 +10,13 @@ instructions
 
 ## Install this vagrant box
 
-- git clone the vagrant `box`:
+- Download the box.
   ```bash
   [local]$ git clone --depth=1 https://github.com/markuz-gj/base-box
   [local]$ cd base-box
   ```
 
-- install your vagrant box, and ssh into the box:
+- Install the box and ssh into the it.
   ```bash
   [local]$ vagrant up --no-provision && vagrant ssh
   ```
@@ -73,29 +73,34 @@ instructions
   vagrant@vagrant-ubuntu-trusty-64:~$
   ```
 
-  If you got this far, this means your `virtualbox` and `vagrant` are working
-  well together and our `base box` is up and running.  
-  But just to be sure, run `uname -v`
+  If you got this far, this means that `Ubuntu`, `VirtualBox` and `Vagrant` are working
+  well together and our `base box` is ready to be provisioned.
+
   ```bash
+  # But just to be sure, run `uname -v` on the guest
   vagrant@vagrant-ubuntu-trusty-64:~$ uname -v
   #53-Ubuntu SMP Wed Jun 4 21:00:20 UTC 2014
   ```
 
 - exit box, reload it, and run provisions:
 
-  - this time around, it may take a long while all provisions are being
-  run. This is the place where `nodejs` and `mongodb` are downloaded and
+  - It may take a long while all provisions are being run.
+  This is the place where `nodejs` and `mongodb` are downloaded and
   installed.
-  You may go grab a coffee
+  You may go grab a coffee.
 
     ```bash
     vagrant@vagrant-ubuntu-trusty-64:~$ exit
     [local] $ vagrant reload --provision && vagrant ssh
-    ```
+    ==> default: Attempting graceful shutdown of VM...
+    ==> default: Clearing any previously set forwarded ports...
+                              ...  ...
+          ```
 
-  - and now, you should see something like this at the end.
+  - and you should see something like this at the end.
 
     ```
+                              ...  ...
     ==> default: Processing triggers for ureadahead (0.100.0-16) ...
     ==> default: Setting up mongodb-org (2.6.1) ...
     Welcome to Ubuntu 14.04 LTS (GNU/Linux 3.13.0-29-generic x86_64)
@@ -128,12 +133,12 @@ instructions
     vagrant@vagrant-ubuntu-trusty-64:~$
     ```
 
-  - test the shared directory
+  - Simple testing.
+
     ```bash
+    # Check if the shared directory is working and test mongo and nodejs version.
     vagrant@vagrant-ubuntu-trusty-64:~$ ls /vagrant
     bootstrap.pp  provisions.sh  readme.md  Vagrantfile
-    #
-    # checking nodejs and mongodb installed versions.
     vagrant@vagrant-ubuntu-trusty-64:~$  node -v
     v0.10.29
     vagrant@vagrant-ubuntu-trusty-64:~$ mongo --version
@@ -145,34 +150,9 @@ instructions
 
     #### Congrats. Now you are set to go.
 
-## Vocabulary
-- `host OS`:  
-  Your main OS. It could be Mac/Windows/Linux OS.  
-
-- `guest OS`:  
-  This is the OS running inside your box. Normally the latest Ubuntu [LTS]()
-  server
-
-- `box`:  
-  This is your virtual machine created by [vagrant]().  
-  To be precise, it's a [virtualbox]() virtual machine. But the `box` management
-  is all done by vagrant.
-
-- `provision`:  
-  To install/upgrade/configure custom software into the `box`
-
-- `Vagrantfile`:  
-  This file contains all the configuration need by vagrant to build your box.
-
-- `box's shared folder`:  
-  This is the directory where the `Vagrantfile` is located and its contents are
-  shared with the `guest os`.  
-  This is the location where host and guest OS'es can share data.
-
-
 ## vagrant cheatsheet:  
 
-All vagrant commands need to be run in the box's shared folder.
+#### All vagrant commands need to be run in the box's shared folder.
 
 ```bash
 # Turn the box on
@@ -190,17 +170,17 @@ vagrant@vagrant-ubuntu-trusty-64:~$ exit
 # Delete the box
 [local]$ vagrant destroy -f
 
-# Turn the box up and go inside of it
+# Bring the box up and go inside of it
 [local]$ vagrant up && vagrant ssh
 
-# Turn the box on and run provisions
+# Turn the box up and run provisions
 [local]$ vagrant up --provision
 
-# Turn the box on and **don't** run provisions.
+# Bring the box up and **don't** run provisions.
 # Useful on first time bringing the box up
 [local]$ vagrant up --no-provision
 
-# a shortcut for `vagrant halt && vagrant up`
+# a equivalent for `vagrant halt && vagrant up`
 [local]$ vagrant reload
 
 # reload, re-provision, and go inside of the box
