@@ -2,7 +2,6 @@
 file { '/etc/motd':
     content => "- OS: Ubuntu 14.04 \"trusty\" server-amd64
 - NodeJS: stable (0.10.x) and latest (0.11.x)
-- MongoDB: stable (2.6.1)
 - Packer: stable (0.6.0)
 - Docker: stable (1.0.0)
 \n"
@@ -26,4 +25,3 @@ class {loadEnv: }
 
 # Make all the magic happen by instantiating the nodejs class
 # class { nodejs: }
-
